@@ -1,11 +1,21 @@
 package admin;
 
-import admin.view.AdminPanel;
+import admin.controller.BookController;
+import admin.model.Book;
+
+import java.util.List;
 
 public class MainAdmin {
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            new AdminPanel();
-        });
+        BookController controller = new BookController();
+        List<Book> books = controller.getAllBooks();
+        for (Book book : books) {
+            System.out.println("📘 " + book.getTitle() + " by " + book.getAuthorName());
+        }
+
+
+        for (Book book : books) {
+            System.out.println("📚 " + book.getTitle() + " by " + book.getAuthorName());
+        }
     }
 }

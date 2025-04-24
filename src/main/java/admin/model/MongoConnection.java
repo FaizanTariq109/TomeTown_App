@@ -1,17 +1,29 @@
 package admin.model;
 
+import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 
 public class MongoConnection {
-    private static final String CONNECTION_STRING = "dmins@tometowndb.cealnqn.mongodb.net"; // Change if using Atlas
-    private static MongoClient mongoClient = null;
+    private static final String CONNECTION_STRING = "mongodb+srv://Admin:LAYP%40dmins@tometowndb.cealnqn.mongodb.net/"
+    ;
+    private static final String DATABASE_NAME = "StallApp";
 
-    public static MongoDatabase getDatabase(String dbName) {
-        if (mongoClient == null) {
-            mongoClient = MongoClients.create(CONNECTION_STRING);
+    private static MongoDatabase database;
+
+    public static MongoDatabase getDatabase() {
+        if (database == null) {
+            try {
+                MongoClient mongoClient = MongoClients.create(CONNECTION_STRING);
+                mongoClient.listDatabaseNames().forEach(name -> System.out.println("🗂 DB: " + name));
+                database = mongoClient.getDatabase(DATABASE_NAME);
+                database.listCollectionNames().forEach(col -> System.out.println("📁 Collection: " + col));
+                System.out.println("✅ Connected to MongoDB");
+            } catch (MongoException e) {
+                System.err.println("❌ Failed to connect to MongoDB: " + e.getMessage());
+            }
         }
-        return mongoClient.getDatabase(dbName);
+        return database;
     }
 }

@@ -1,118 +1,57 @@
 package admin.view;
 
+import admin.controller.BookController;
 import admin.model.Book;
-import admin.model.MongoConnection;
-import com.mongodb.client.MongoCollection;
-import org.bson.Document;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.List;
 
-public class AdminPanel extends JFrame {
-    private JTextField nameField, authorField, categoryField, priceField, stockField;
-    private JButton addButton;
-    private JTable bookTable;
-    private DefaultTableModel tableModel;
-    private ArrayList<Book> bookList = new ArrayList<>();
+public class AdminPanel extends Application {
 
-    public AdminPanel() {
-        setTitle("Admin Panel - TomeTown Stall 📚");
-        setSize(900, 600);
-        setLocationRelativeTo(null); // Center the window
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+    @Override
+    public void start(Stage stage) {
+        BookController controller = new BookController();
+        List<Book> books = controller.getAllBooks();
+        System.out.println("📦 Fetched books: " + books.size());
 
-        initComponents();
 
-        setVisible(true);
-    }
+        ScrollPane scrollPane = new ScrollPane();
+        HBox hbox = new HBox(15); // 15 px spacing between book tiles
+        hbox.setStyle("-fx-padding: 20;");
 
-    private void initComponents() {
-        // TOP: Form Panel
-        JPanel formPanel = new JPanel(new GridLayout(2, 6, 5, 5));
-        nameField = new JTextField();
-        authorField = new JTextField();
-        categoryField = new JTextField();
-        priceField = new JTextField();
-        stockField = new JTextField();
-        addButton = new JButton("Add Book");
+        for (Book book : books) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin/view/BookTile.fxml"));
+                VBox tile = loader.load();
 
-        formPanel.add(new JLabel("Name"));
-        formPanel.add(new JLabel("Author"));
-        formPanel.add(new JLabel("Category"));
-        formPanel.add(new JLabel("Price"));
-        formPanel.add(new JLabel("Stock"));
-        formPanel.add(new JLabel("")); // filler
+                BookTileController tileController = loader.getController();
+                tileController.setBook(book);
 
-        formPanel.add(nameField);
-        formPanel.add(authorField);
-        formPanel.add(categoryField);
-        formPanel.add(priceField);
-        formPanel.add(stockField);
-        formPanel.add(addButton);
-
-        add(formPanel, BorderLayout.NORTH);
-
-        // CENTER: Table Panel
-        String[] columns = {"Name", "Author", "Category", "Price", "Stock", "Status"};
-        tableModel = new DefaultTableModel(columns, 0);
-        bookTable = new JTable(tableModel);
-        JScrollPane tableScroll = new JScrollPane(bookTable);
-
-        add(tableScroll, BorderLayout.CENTER);
-
-        // Add button action
-        addButton.addActionListener(e -> addBook());
-    }
-
-    private void addBook() {
-        try {
-            String name = nameField.getText().trim();
-            String author = authorField.getText().trim();
-            String category = categoryField.getText().trim();
-            double price = Double.parseDouble(priceField.getText().trim());
-            int stock = Integer.parseInt(stockField.getText().trim());
-
-            Book book = new Book(name, author, category, price, stock);
-            bookList.add(book);
-
-            // Add to Table
-            tableModel.addRow(new Object[]{
-                book.getName(), book.getAuthor(), book.getCategory(), 
-                book.getPrice(), book.getStock(),
-                (book.isInWarehouse() ? "In Warehouse" : "Available")
-            });
-
-            // Save to MongoDB
-            saveBookToMongo(book);
-
-            // Clear form
-            clearForm();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Invalid input. Please check your entries.", "Error", JOptionPane.ERROR_MESSAGE);
+                hbox.getChildren().add(tile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+        scrollPane.setContent(hbox);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        Scene scene = new Scene(scrollPane, 1000, 600);
+        stage.setTitle("📚 TomeTown Admin Panel");
+        stage.setScene(scene);
+        stage.show();
     }
 
-    private void saveBookToMongo(Book book) {
-        MongoCollection<Document> collection = MongoConnection.getDatabase("stallapp").getCollection("books");
-
-        Document doc = new Document()
-                .append("name", book.getName())
-                .append("author", book.getAuthor())
-                .append("category", book.getCategory())
-                .append("price", book.getPrice())
-                .append("stock", book.getStock());
-
-        collection.insertOne(doc);
-    }
-
-    private void clearForm() {
-        nameField.setText("");
-        authorField.setText("");
-        categoryField.setText("");
-        priceField.setText("");
-        stockField.setText("");
+    public static void main(String[] args) {
+        launch();
     }
 }

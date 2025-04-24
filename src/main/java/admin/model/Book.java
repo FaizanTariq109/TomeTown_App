@@ -1,47 +1,96 @@
 package admin.model;
 
 public class Book {
-    private String name;
-    private String author;
-    private String category;
-    private double price;
-    private int stock;
+    private String title;
+    private String authorName;
+    private String genre;
+    private String language;
+    private int quantity;
+    private double purchasePrice;
+    private double totalPurchase;
+    private double retailPrice;
+    private double totalRetail;
+    private byte[] imageData;  // For storing book image as byte array
 
-    public Book(String name, String author, String category, double price, int stock) {
-        this.name = name;
-        this.author = author;
-        this.category = category;
-        this.price = price;
-        this.stock = stock;
+    // Getters and Setters
+
+    public String getTitle() {
+        return title;
     }
 
-    // Getters
-    public String getName() {
-        return name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public String getCategory() {
-        return category;
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
-    public double getPrice() {
-        return price;
+    public String getGenre() {
+        return genre;
     }
 
-    public int getStock() {
-        return stock;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
-    // Setters
-    public void setStock(int stock) {
-        this.stock = stock;
+    public String getLanguage() {
+        return language;
     }
 
-    public boolean isInWarehouse() {
-        return stock == 0;
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public double getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(double purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
+
+    public double getTotalPurchase() {
+        return totalPurchase;
+    }
+
+    public void setTotalPurchase(double totalPurchase) {
+        this.totalPurchase = totalPurchase;
+    }
+
+    public double getRetailPrice() {
+        return retailPrice;
+    }
+
+    public void setRetailPrice(double retailPrice) {
+        this.retailPrice = retailPrice;
+    }
+
+    public double getTotalRetail() {
+        return totalRetail;
+    }
+
+    public void setTotalRetail(double totalRetail) {
+        this.totalRetail = totalRetail;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
     }
 }
