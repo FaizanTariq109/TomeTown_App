@@ -21,6 +21,8 @@
     <Label fx:id="languageLabel" style="-fx-font-size: 10;" wrapText="true" />
     <Label fx:id="priceLabel" style="-fx-text-fill: green; -fx-font-weight: bold;" />
     <Label fx:id="quantityLabel" style="-fx-font-size: 10;" wrapText="true" />
+    <Button fx:id="addToCartButton" text="Add to Cart" onAction="#onAddToCartClicked"/>
+
 
     <HBox spacing="10" alignment="CENTER">
         <Button text="Edit" onAction="#onEditClicked" />

@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -73,11 +74,21 @@ public class AdminPanel extends Application {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        VBox root = new VBox(15, topBar, scrollPane);
+        BorderPane root = new BorderPane();
+        root.setTop(topBar);
+        root.setCenter(scrollPane);
+
+// Cart Panel
+        CartPanel cartPanel = new CartPanel();
+        VBox cartView = cartPanel.createPanel();
+        root.setRight(cartView);
+        cartPanel.updateCartView();
+
+// Refresh cart on book add
+        BookTileController.setCartRefresh(() -> cartPanel.refresh());
+
         root.setStyle("-fx-padding: 20;");
-
         loadAllBooks();
-
         Scene scene = new Scene(root, 1000, 600);
         stage.setTitle("TomeTown Admin Panel");
         stage.setScene(scene);

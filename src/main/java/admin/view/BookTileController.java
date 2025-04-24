@@ -26,8 +26,14 @@ public class BookTileController {
     @FXML private Label priceLabel;
     @FXML private Label quantityLabel;
     @FXML private Label languageLabel;
+    @FXML private Button addToCartButton;
+    private static Runnable cartRefresh;
 
     private Book book;
+
+    public static void setCartRefresh(Runnable refreshCallback) {
+        cartRefresh = refreshCallback;
+    }
 
     public void setBook(Book book) {
         this.book = book;
@@ -44,6 +50,17 @@ public class BookTileController {
             bookImage.setImage(img);
         }
     }
+
+    @FXML
+    private void onAddToCartClicked() {
+        CartManager.getInstance().addToCart(book);
+        if (cartRefresh != null) cartRefresh.run();
+
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setContentText("Added to cart: " + book.getTitle());
+        alert.showAndWait();
+    }
+
 
     @FXML
     private void onEditClicked() {
