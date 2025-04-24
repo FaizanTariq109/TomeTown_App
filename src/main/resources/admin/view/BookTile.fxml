@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 
+<?import javafx.scene.control.Button?>
+
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="admin.view.BookTileController"
       spacing="5"
@@ -16,6 +18,13 @@
     <Label fx:id="titleLabel" style="-fx-font-weight: bold;" wrapText="true" />
     <Label fx:id="authorLabel" style="-fx-font-size: 10;" wrapText="true" />
     <Label fx:id="genreLabel" style="-fx-font-size: 10;" wrapText="true" />
+    <Label fx:id="languageLabel" style="-fx-font-size: 10;" wrapText="true" />
     <Label fx:id="priceLabel" style="-fx-text-fill: green; -fx-font-weight: bold;" />
+    <Label fx:id="quantityLabel" style="-fx-font-size: 10;" wrapText="true" />
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Edit" onAction="#onEditClicked" />
+        <Button text="Delete" onAction="#onDeleteClicked" />
+    </HBox>
 
 </VBox>
