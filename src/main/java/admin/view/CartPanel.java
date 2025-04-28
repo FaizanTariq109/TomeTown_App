@@ -10,10 +10,52 @@ public class CartPanel {
     private final VBox cartBox = new VBox(10);
     private final Label totalLabel = new Label("Total: Rs 0.0");
 
+    private void openOrderForm() {
+        // Show a dialog to collect customer details
+        TextInputDialog nameDialog = new TextInputDialog();
+        nameDialog.setTitle("Customer Information");
+        nameDialog.setHeaderText("Enter Customer Details");
+        nameDialog.setContentText("Name:");
+        String customerName = nameDialog.showAndWait().orElse("");
+
+        TextInputDialog noteDialog = new TextInputDialog();
+        noteDialog.setTitle("Customer Information");
+        noteDialog.setHeaderText("Enter Note");
+        noteDialog.setContentText("Note (optional):");
+        String customerNote = noteDialog.showAndWait().orElse("");
+
+        TextInputDialog instaDialog = new TextInputDialog();
+        instaDialog.setTitle("Customer Information");
+        instaDialog.setHeaderText("Enter Instagram Account");
+        instaDialog.setContentText("Instagram Account (optional):");
+        String instaAccount = instaDialog.showAndWait().orElse("");
+
+        TextInputDialog phoneDialog = new TextInputDialog();
+        phoneDialog.setTitle("Customer Information");
+        phoneDialog.setHeaderText("Enter Phone Number");
+        phoneDialog.setContentText("Phone Number:");
+        String phoneNumber = phoneDialog.showAndWait().orElse("");
+
+        // Place the order
+        CartManager.getInstance().placeOrder(customerName, customerNote, instaAccount, phoneNumber);
+
+        // Show success message
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Order Placed");
+        alert.setContentText("Your order has been placed successfully!");
+        alert.showAndWait();
+
+        // Refresh the cart view
+        updateCartView();
+    }
+
     public VBox createPanel() {
         cartBox.setPadding(new Insets(10));
         cartBox.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #ccc;");
         updateCartView();
+        Button placeOrderButton = new Button("Place Order");
+        placeOrderButton.setOnAction(e -> openOrderForm());
+        cartBox.getChildren().add(placeOrderButton);
         return cartBox;
     }
 

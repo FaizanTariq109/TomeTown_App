@@ -1,10 +1,12 @@
 package admin.view;
 
+import admin.controller.BookController;
 import admin.model.Book;
+import admin.model.BookOrder;
+import admin.model.MongoConnection;
+import admin.model.Payment;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CartManager {
 
@@ -57,6 +59,38 @@ public class CartManager {
         return cart.entrySet().stream()
                 .mapToDouble(e -> e.getKey().getRetailPrice() * e.getValue())
                 .sum();
+    }
+    public void placeOrder(String customerName, String customerNote, String instaAccount, String phoneNumber) {
+        double totalAmount = 0.0;
+        List<BookOrder> bookOrders = new ArrayList<>();
+
+        for (Map.Entry<Book, Integer> entry : cart.entrySet()) {
+            Book book = entry.getKey();
+            int quantityOrdered = entry.getValue();
+
+            // Check if there is enough stock
+            if (book.getQuantity() >= quantityOrdered) {
+                // Update the quantity of the book
+                book.setQuantity(book.getQuantity() - quantityOrdered);
+                totalAmount += book.getRetailPrice() * quantityOrdered;
+
+                // Create a BookOrder
+                bookOrders.add(new BookOrder(book, quantityOrdered, book.getRetailPrice() * quantityOrdered));
+
+                // Update the book in DB (use BookController or MongoDB directly here)
+                new BookController().updateBookQuantity(book);
+            } else {
+                // Handle the case where quantity is insufficient, e.g., show an error
+                System.out.println("Not enough stock for: " + book.getTitle());
+            }
+        }
+
+        // Save the payment record
+        Payment payment = new Payment(customerName, customerNote, instaAccount, phoneNumber, bookOrders, totalAmount);
+        MongoConnection.savePayment(payment);
+
+        // Clear the cart after successful payment
+        cart.clear();
     }
 
     // Total items count

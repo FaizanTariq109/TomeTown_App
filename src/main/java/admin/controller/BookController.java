@@ -111,7 +111,12 @@ public class BookController {
             System.err.println("Error updating book: " + e.getMessage());
         }
     }
+    public void updateBookQuantity(Book book) {
+        Document query = new Document("title", book.getTitle());
+        Document update = new Document("$set", new Document("quantity", book.getQuantity()));
 
+        MongoConnection.getDatabase().getCollection("books").updateOne(query, update);
+    }
     public void deleteBook(Book book) {
         try {
             MongoDatabase db = MongoConnection.getDatabase();
